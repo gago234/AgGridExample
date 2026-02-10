@@ -1,119 +1,74 @@
 
-import {
-  useCallback,
-  useMemo,
-  useState,
-  StrictMode,
-} from "react";
+import { useState, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { AgGridReact } from "ag-grid-react";
-import {
-  ColDef,
-  GridReadyEvent,
-  IServerSideDatasource,
-  ModuleRegistry,
-  PaginationModule,
-  ValidationModule,
-} from "ag-grid-community";
-import {
-  ColumnMenuModule,
-  ColumnsToolPanelModule,
-  ContextMenuModule,
-  ServerSideRowModelModule,
-} from "ag-grid-enterprise";
-import { IOlympicDataWithId } from "./interfaces";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
+import { OlympicGrid, type GridMode } from "./OlympicGrid";
 
-ModuleRegistry.registerModules([
-  PaginationModule,
-  ColumnsToolPanelModule,
-  ColumnMenuModule,
-  ContextMenuModule,
-  ServerSideRowModelModule,
-  ...(process.env.NODE_ENV !== "production" ? [ValidationModule] : []),
-]);
-
-const API_BASE_URL = "/api/olympics";
-
-const getServerSideDatasource: () => IServerSideDatasource = () => {
-  return {
-    getRows: async (params) => {
-      console.log("[Datasource] - rows requested by grid: ", params.request);
-      
-      try {
-        const response = await fetch(`${API_BASE_URL}/data`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(params.request),
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          params.success({
-            rowData: data.rows,
-            rowCount: data.lastRow,
-          });
-        } else {
-          params.fail();
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        params.fail();
-      }
-    },
-  };
+const modeLabels: Record<GridMode, string> = {
+  pagination: "Lazy-loading Pagination",
+  infinite: "Endless Scroll",
 };
 
-const GridExample = () => {
-  const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
-  const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
-
-  const [columnDefs, _] = useState<ColDef[]>([
-    { field: "id", maxWidth: 75 },
-    { field: "athlete", minWidth: 190 },
-    { field: "age" },
-    { field: "year" },
-    { field: "gold" },
-    { field: "silver" },
-    { field: "bronze" },
-  ]);
-
-  const defaultColDef = useMemo<ColDef>(() => {
-    return {
-      flex: 1,
-      minWidth: 90,
-    };
-  }, []);
-
-  const onGridReady = useCallback((params: GridReadyEvent) => {
-    // Create datasource that connects to Spring Boot backend
-    const datasource = getServerSideDatasource();
-    // Register the datasource with the grid
-    params.api!.setGridOption("serverSideDatasource", datasource);
-  }, []);
+const App = () => {
+  const [mode, setMode] = useState<GridMode>("pagination");
 
   return (
-    <div style={containerStyle}>
-      <div style={gridStyle}>
-        <AgGridReact<IOlympicDataWithId>
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          rowModelType={"serverSide"}
-          pagination={true}
-          paginationPageSize={20}
-          cacheBlockSize={10}
-          onGridReady={onGridReady}
-        />
+    <Provider store={store}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          fontFamily: "system-ui, sans-serif",
+        }}
+      >
+        {/* ── Mode selector ──────────────────────────────────────── */}
+        <div
+          style={{
+            padding: "12px 16px",
+            display: "flex",
+            gap: "16px",
+            alignItems: "center",
+            background: "#f5f5f5",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <span style={{ fontWeight: 600 }}>Mode:</span>
+          {(Object.keys(modeLabels) as GridMode[]).map((m) => (
+            <label
+              key={m}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                cursor: "pointer",
+              }}
+            >
+              <input
+                type="radio"
+                name="gridMode"
+                value={m}
+                checked={mode === m}
+                onChange={() => setMode(m)}
+              />
+              {modeLabels[m]}
+            </label>
+          ))}
+        </div>
+
+        {/* ── Grid (key forces remount on mode change) ───────────── */}
+        <div style={{ flex: 1 }}>
+          <OlympicGrid key={mode} mode={mode} />
+        </div>
       </div>
-    </div>
+    </Provider>
   );
 };
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
   <StrictMode>
-    <GridExample />
+    <App />
   </StrictMode>,
 );

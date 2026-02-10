@@ -1,0 +1,62 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+// ── Request / Response types (mirrors the OpenAPI schema) ────────────
+
+export interface SortModel {
+  colId: string;
+  sort: "asc" | "desc";
+}
+
+export interface FilterModel {
+  filterType?: string;
+  values?: string[];
+}
+
+export interface ServerSideRequest {
+  /** Starting row index (0-based) */
+  startRow: number;
+  /** Ending row index (exclusive) */
+  endRow: number;
+  sortModel?: SortModel[];
+  filterModel?: Record<string, FilterModel>;
+}
+
+export interface ServerSideResponse {
+  success: boolean;
+  rows: Record<string, unknown>[];
+  /** Total rows available (-1 when unknown) */
+  lastRow: number;
+}
+
+// ── RTK Query API ────────────────────────────────────────────────────
+
+export const olympicsApi = createApi({
+  reducerPath: "olympicsApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/olympics" }),
+  // Cache unused entries for 5 min – handy when user scrolls back
+  keepUnusedDataFor: 300,
+  endpoints: (builder) => ({
+    /**
+     * POST /api/olympics/data
+     * The main pagination / infinite-scroll endpoint.
+     */
+    getOlympicData: builder.query<ServerSideResponse, ServerSideRequest>({
+      query: (request) => ({
+        url: "/data",
+        method: "POST",
+        body: request,
+      }),
+    }),
+
+    /**
+     * GET /api/olympics/countries
+     * Utility endpoint – returns unique country names.
+     */
+    getCountries: builder.query<string[], void>({
+      query: () => "/countries",
+    }),
+  }),
+});
+
+// React hooks (usable in components if needed)
+export const { useGetOlympicDataQuery, useGetCountriesQuery } = olympicsApi;

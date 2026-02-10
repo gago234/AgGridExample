@@ -20,46 +20,25 @@ import java.util.List;
 @RequestMapping("/api/olympics")
 @Tag(name = "Olympic Data", description = "API for managing Olympic athlete data")
 public class OlympicDataController {
-    
+
     @Autowired
     private OlympicDataService service;
-    
-    @Operation(
-        summary = "Get Olympic data with server-side pagination",
-        description = "Retrieve Olympic athlete data with support for pagination, sorting, and filtering"
-    )
+
+    @Operation(summary = "Get Olympic data with server-side pagination", description = "Retrieve Olympic athlete data with support for pagination, sorting, and filtering")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Successfully retrieved data",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = ServerSideResponse.class)
-            )
-        ),
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ServerSideResponse.class))),
         @ApiResponse(responseCode = "400", description = "Invalid request parameters")
     })
     @PostMapping("/data")
     public ResponseEntity<ServerSideResponse> getData(
-            @Parameter(description = "Server-side request with pagination, sorting, and filter parameters")
-            @RequestBody ServerSideRequest request) {
+            @Parameter(description = "Server-side request with pagination, sorting, and filter parameters") @RequestBody ServerSideRequest request) {
         ServerSideResponse response = service.getData(request);
         return ResponseEntity.ok(response);
     }
-    
-    @Operation(
-        summary = "Get all countries",
-        description = "Retrieve a list of all unique countries in the Olympic data"
-    )
+
+    @Operation(summary = "Get all countries", description = "Retrieve a list of all unique countries in the Olympic data")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Successfully retrieved countries",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = List.class)
-            )
-        )
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved countries", content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
     })
     @GetMapping("/countries")
     public ResponseEntity<List<String>> getCountries() {
