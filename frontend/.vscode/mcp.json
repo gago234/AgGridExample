@@ -1,0 +1,12 @@
+{
+    "servers": {
+        "ag-mcp": {
+            "command": "npx",
+            "args": [
+                "ag-mcp"
+            ],
+            "type": "stdio"
+        }
+    },
+    "inputs": []
+}

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class DataLoader implements CommandLineRunner {
             System.out.println("Loading Olympic data from external source...");
             
             // Fetch data from the same source used in the React app
-            URL url = new URL("https://www.ag-grid.com/example-assets/olympic-winners.json");
+            URL url = URI.create("https://www.ag-grid.com/example-assets/olympic-winners.json").toURL();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             
