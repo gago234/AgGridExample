@@ -1,7 +1,7 @@
 package com.example.olympics.service;
 
-import com.example.olympics.dto.ServerSideRequest;
-import com.example.olympics.dto.ServerSideResponse;
+import com.example.model.ServerSideRequest;
+import com.example.model.ServerSideResponse;
 import com.example.olympics.model.OlympicData;
 import com.example.olympics.repository.OlympicDataRepository;
 import jakarta.persistence.criteria.Predicate;
@@ -42,7 +42,7 @@ public class OlympicDataService {
             // Get total count
             long totalCount = repository.count(spec);
             
-            return new ServerSideResponse(true, page.getContent(), totalCount);
+            return new ServerSideResponse(true, new ArrayList<>(page.getContent()), totalCount);
         } catch (Exception e) {
             e.printStackTrace();
             return new ServerSideResponse(false, new ArrayList<>(), 0L);
@@ -54,9 +54,9 @@ public class OlympicDataService {
             List<Predicate> predicates = new ArrayList<>();
             
             if (request.getFilterModel() != null && !request.getFilterModel().isEmpty()) {
-                for (Map.Entry<String, ServerSideRequest.FilterModel> entry : request.getFilterModel().entrySet()) {
+                for (Map.Entry<String, com.example.model.ServerSideRequestFilterModelValue> entry : request.getFilterModel().entrySet()) {
                     String field = entry.getKey();
-                    ServerSideRequest.FilterModel filter = entry.getValue();
+                    com.example.model.ServerSideRequestFilterModelValue filter = entry.getValue();
                     
                     if ("set".equals(filter.getFilterType()) && filter.getValues() != null && !filter.getValues().isEmpty()) {
                         predicates.add(root.get(field).in(filter.getValues()));
@@ -74,8 +74,9 @@ public class OlympicDataService {
         }
         
         List<Sort.Order> orders = new ArrayList<>();
-        for (ServerSideRequest.SortModel sortModel : request.getSortModel()) {
-            Sort.Direction direction = "desc".equalsIgnoreCase(sortModel.getSort()) 
+        for (com.example.model.ServerSideRequestSortModelInner sortModel : request.getSortModel()) {
+            String sortValue = sortModel.getSort() != null ? sortModel.getSort().getValue() : "asc";
+            Sort.Direction direction = "desc".equalsIgnoreCase(sortValue) 
                 ? Sort.Direction.DESC 
                 : Sort.Direction.ASC;
             orders.add(new Sort.Order(direction, sortModel.getColId()));

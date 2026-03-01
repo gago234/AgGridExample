@@ -3,11 +3,7 @@ package com.example.olympics.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "OLYMPIC_DATA")
 public class OlympicData {

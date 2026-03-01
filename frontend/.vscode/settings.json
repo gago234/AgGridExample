@@ -1,5 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
     "chat.mcp.serverSampling": {
         "AgGridSSPagination/.vscode/mcp.json: ag-mcp": {
             "allowedModels": [
@@ -10,9 +9,5 @@
                 "copilot/oswe-vscode-prime"
             ]
         }
-    },
-    "vite.base": "./frontend",
-    "vite.autoStart": true,
-    "vite.devCommand": "with-dir frontend { npx vite }"
-
+    }
 }

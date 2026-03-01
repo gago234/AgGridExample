@@ -15,5 +15,5 @@
     "allowSyntheticDefaultImports": true,
     "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src/**/*", "eslint.config.ts", "vite.config.ts"]
 }

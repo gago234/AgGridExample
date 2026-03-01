@@ -12,8 +12,9 @@
     "dev:backend": "cd backend && mvn spring-boot:run",
     "build": "vite build",
     "preview": "vite preview",
+    "lint": "eslint src",
     "openapi:generate": "openapi-typescript http://localhost:8080/api-docs -o ./src/types/api-schema.ts",
-    "openapi:generate-client": "openapi-typescript-codegen --input http://localhost:8080/api-docs --output ./src/api-client --client fetch"
+    "openapi:generate-client": "openapi-typescript-codegen --input http://localhost:8080/api-docs --output ./src/openapi --client fetch"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
@@ -24,14 +25,19 @@
     "react-redux": "^9.2.0"
   },
   "devDependencies": {
-    "@types/node": "^25.2.3",
+    "@nabla/vite-plugin-eslint": "^3.0.0",
+    "@types/node": "^25.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
     "concurrently": "^9.2.1",
+    "eslint": "^10.0.2",
+    "eslint-config-react-app": "^7.0.1",
+    "jiti": "^2.6.1",
     "openapi-typescript": "^7.13.0",
     "openapi-typescript-codegen": "^0.30.0",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1"
   }
 }

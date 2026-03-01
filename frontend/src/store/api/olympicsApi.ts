@@ -52,7 +52,7 @@ export const olympicsApi = createApi({
      * GET /api/olympics/countries
      * Utility endpoint – returns unique country names.
      */
-    getCountries: builder.query<string[], void>({
+    getCountries: builder.query<string[], undefined>({
       query: () => "/countries",
     }),
   }),

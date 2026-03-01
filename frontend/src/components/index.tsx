@@ -50,7 +50,7 @@ const App = () => {
                 name="gridMode"
                 value={m}
                 checked={mode === m}
-                onChange={() => setMode(m)}
+                onChange={() => { setMode(m); }}
               />
               {modeLabels[m]}
             </label>
@@ -66,9 +66,12 @@ const App = () => {
   );
 };
 
-const root = createRoot(document.getElementById("root")!);
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  const root = createRoot(rootElement);
+  root.render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+}

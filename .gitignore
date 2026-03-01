@@ -1,16 +1,14 @@
-# See https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/template/.gitignore
-
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
+openapi/
 
 # Testing
 /coverage
 
 # Production
-/build
-/dist
-/.vscode
+build/
+dist/
 
 # Misc
 .DS_Store
@@ -22,3 +20,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# uv
+.venv
+.uv
+
+.env

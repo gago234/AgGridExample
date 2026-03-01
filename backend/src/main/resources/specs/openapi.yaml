@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: Olympics API
+  version: 1.0.0
+  description: API for Olympics data
+
+paths:
+  /data:
+    post:
+      tags:
+        - olympic        
+      summary: Get Olympic data with server-side pagination
+      description: Retrieve Olympic athlete data with support for pagination, sorting, and filtering
+      operationId: getData
+      requestBody:
+        description: Server-side request with pagination, sorting, and filter parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServerSideRequest'
+      responses:
+        '200':
+          description: Successfully retrieved data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerSideResponse'
+        '400':
+          description: Invalid request parameters
+  
+  /countries:
+    get:
+      tags:
+        - olympic    
+      summary: Get all countries
+      description: Retrieve a list of all unique countries in the Olympic data
+      operationId: getCountries
+      responses:
+        '200':
+          description: Successfully retrieved countries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: ["USA", "China", "Russia", "Great Britain"]
+
+
+components:
+  schemas:
+    Athlete:
+      type: object
+      required:
+        - id
+        - name
+        - sport
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        sport:
+          type: string
+        age:
+          type: integer
+          minimum: 0
+
+    ServerSideResponse:
+      type: object
+      required:
+        - success
+        - rows
+        - lastRow
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        rows:
+          type: array
+          description: List of data rows for the current page
+          items:
+            type: object
+        lastRow:
+          type: integer
+          format: int64
+          description: Total number of rows available
+          example: 1000
+
+    ServerSideRequest:
+      type: object
+      properties:
+        startRow:
+          type: integer
+          description: Starting row index for pagination
+          example: 0
+        endRow:
+          type: integer
+          description: Ending row index for pagination
+          example: 100
+        sortModel:
+          type: array
+          description: List of columns to sort by with sort direction
+          items:
+            type: object
+            properties:
+              colId:
+                type: string
+                description: Column ID to sort by
+                example: athlete
+              sort:
+                type: string
+                description: Sort direction
+                example: asc
+                enum:
+                  - asc
+                  - desc
+        filterModel:
+          type: object
+          description: Map of column filters
+          additionalProperties:
+            type: object
+            properties:
+              filterType:
+                type: string
+                description: Type of filter
+                example: set
+              values:
+                type: array
+                description: Filter values
+                items:
+                  type: string
+
+  responses:
+    ServerSideResponse:
+      description: Server-side response with paginated data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerSideResponse'

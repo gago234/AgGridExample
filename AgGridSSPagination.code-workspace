@@ -5,9 +5,16 @@
 		},
 		{
 			"path": "backend"
+		},
+		{
+			"path": "database"
 		}
 	],
 	"settings": {
-		
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"maven.view": "hierarchical",
+		"vite.devCommand": "nu -c 'pwd'; function dummy {}; dummy",
+		"vite.autoStart": false,
+		"eslint.workingDirectories": ["frontend"]
 	}
 }
