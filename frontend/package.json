@@ -13,8 +13,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src",
-    "openapi:generate": "openapi-typescript http://localhost:8080/api-docs -o ./src/types/api-schema.ts",
-    "openapi:generate-client": "openapi-typescript-codegen --input http://localhost:8080/api-docs --output ./src/openapi --client fetch"
+    "openapi:generate": "openapi-typescript http://localhost:4001/api-docs -o ./src/types/api-schema.ts",
+    "openapi:generate-client": "openapi-typescript-codegen --input http://localhost:4001/api-docs --output ./src/openapi --client fetch"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",

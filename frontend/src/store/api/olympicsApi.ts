@@ -32,10 +32,11 @@ export interface ServerSideResponse {
 
 export const olympicsApi = createApi({
   reducerPath: "olympicsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api/olympics" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/" }),
   // Cache unused entries for 5 min – handy when user scrolls back
   keepUnusedDataFor: 300,
   endpoints: (builder) => ({
+    
     /**
      * POST /api/olympics/data
      * The main pagination / infinite-scroll endpoint.
@@ -55,6 +56,7 @@ export const olympicsApi = createApi({
     getCountries: builder.query<string[], undefined>({
       query: () => "/countries",
     }),
+    
   }),
 });
 

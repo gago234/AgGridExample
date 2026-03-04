@@ -1,9 +1,10 @@
-package com.example.olympics.service;
+package com.backend.olympics.service;
 
+import com.backend.olympics.model.OlympicData;
+import com.backend.olympics.repository.OlympicDataRepository;
 import com.example.model.ServerSideRequest;
 import com.example.model.ServerSideResponse;
-import com.example.olympics.model.OlympicData;
-import com.example.olympics.repository.OlympicDataRepository;
+
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

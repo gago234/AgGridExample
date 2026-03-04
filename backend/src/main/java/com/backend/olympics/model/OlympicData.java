@@ -1,11 +1,11 @@
-package com.example.olympics.model;
+package com.backend.olympics.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Data
 @Entity
-@Table(name = "OLYMPIC_DATA")
+@Table(name = "olympic_winners")
 public class OlympicData {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;

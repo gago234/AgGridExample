@@ -13,7 +13,7 @@
 	"settings": {
 		"java.configuration.updateBuildConfiguration": "automatic",
 		"maven.view": "hierarchical",
-		"vite.devCommand": "nu -c 'pwd'; function dummy {}; dummy",
+		"vite.devCommand": "cd ../frontend; npx vite",
 		"vite.autoStart": false,
 		"eslint.workingDirectories": ["frontend"]
 	}

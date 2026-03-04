@@ -1,10 +1,11 @@
-package com.example.olympics.repository;
+package com.backend.olympics.repository;
 
-import com.example.olympics.model.OlympicData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.backend.olympics.model.OlympicData;
 
 import java.util.List;
 

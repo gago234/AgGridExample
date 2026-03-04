@@ -1,12 +1,14 @@
-package com.example.olympics.controller;
+package com.backend.olympics.controller;
 
 import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.backend.olympics.service.OlympicDataService;
 import com.example.api.OlympicApiDelegate;
 import com.example.model.ServerSideRequest;
 import com.example.model.ServerSideResponse;
-import com.example.olympics.service.OlympicDataService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,4 +27,5 @@ public class OlympicDelegateImpl implements OlympicApiDelegate {
     public ResponseEntity<List<String>> getCountries() {
         return ResponseEntity.ok(service.getCountries());
     }
+
 }
