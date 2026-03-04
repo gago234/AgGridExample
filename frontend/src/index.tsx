@@ -15,38 +15,18 @@ export const App = () => {
 
   return (
     <Provider store={store}>
-      <h1 className="">
-        Hello world!
-      </h1>
       <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          fontFamily: "system-ui, sans-serif",
-        }}
+        className="flex flex-col h-full p-4 text-md"
       >
         {/* ── Mode selector ──────────────────────────────────────── */}
         <div
-          style={{
-            padding: "12px 16px",
-            display: "flex",
-            gap: "16px",
-            alignItems: "center",
-            background: "#f5f5f5",
-            borderBottom: "1px solid #ddd",
-          }}
+          className="px-4 py-3 flex gap-4 mb-2 rounded-md items-center bg-gray-100 border border-gray-300"
         >
           <span style={{ fontWeight: 600 }}>Mode:</span>
           {(Object.keys(modeLabels) as GridMode[]).map((m) => (
             <label
               key={m}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-                cursor: "pointer",
-              }}
+              className="flex items-center gap-1 cursor-pointer"
             >
               <input
                 type="radio"
