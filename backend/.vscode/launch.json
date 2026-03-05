@@ -6,9 +6,9 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Debug Spring Boot: Application.java",
+            "name": "Debug Spring Boot: OpenApiGeneratorApplication.java",
             "request": "launch",
-            "mainClass": "com.backend.olympics.Application",
+            "mainClass": "com.backend.olympics.OpenApiGeneratorApplication",
             "projectName": "olympics-api",
             "args": "",
             "env": {
@@ -20,7 +20,7 @@
             "type": "java",
             "name": "OpenApiGeneratorApplication",
             "request": "launch",
-            "mainClass": "org.openapitools.OpenApiGeneratorApplication",
+            "mainClass": "com.backend.olympics.OpenApiGeneratorApplication",
             "projectName": "olympics-api"
         }
     ]

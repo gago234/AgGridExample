@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.backend.olympics.model.ServerSideRequest;
+import com.backend.olympics.model.ServerSideResponse;
 import com.backend.olympics.service.OlympicDataService;
-import com.example.api.OlympicApiDelegate;
-import com.example.model.ServerSideRequest;
-import com.example.model.ServerSideResponse;
 
+import backend.olympics.api.OlympicApiDelegate;
 import lombok.RequiredArgsConstructor;
 
 @Service

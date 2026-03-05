@@ -51,7 +51,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.19.0</version>
+                <version>7.20.0</version>
                 <executions>
                     <execution>
                         <id>generate-client</id>
@@ -62,9 +62,10 @@
                             <inputSpec>${project.basedir}/src/main/resources/specs/openapi.yaml</inputSpec>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <generatorName>spring</generatorName>
-                            <apiPackage>com.example.api</apiPackage>
-                            <modelPackage>com.example.model</modelPackage>
+                            <apiPackage>backend.olympics.api</apiPackage>
+                            <modelPackage>com.backend.olympics.model</modelPackage>
                             <configOptions>
+                                <basePackage>com.backend.olympics</basePackage>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <useTags>true</useTags>
                                 <documentationProvider>none</documentationProvider>
@@ -75,6 +76,9 @@
                                 <additionalEnumTypeAnnotations>@SuppressWarnings("all")</additionalEnumTypeAnnotations>
                                 <additionalModelTypeAnnotations>@SuppressWarnings("all")</additionalModelTypeAnnotations>
                                 <additionalOneOfTypeAnnotations>@SuppressWarnings("all")</additionalOneOfTypeAnnotations>
+                                <additionalApiTypeAnnotations>@SuppressWarnings("all")</additionalApiTypeAnnotations>
+                                <additionalControllerAnnotations>@SuppressWarnings("all")</additionalControllerAnnotations>
+                                <additionalApplicationAnnotations>@SuppressWarnings("all")</additionalApplicationAnnotations>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -86,7 +90,7 @@
 
     <dependencies>
 
-    
+
 
         <dependency>
             <groupId>org.openapitools</groupId>

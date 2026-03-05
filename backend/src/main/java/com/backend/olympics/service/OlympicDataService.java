@@ -1,9 +1,11 @@
 package com.backend.olympics.service;
 
 import com.backend.olympics.model.OlympicData;
+import com.backend.olympics.model.ServerSideRequest;
+import com.backend.olympics.model.ServerSideRequestFilterModelValue;
+import com.backend.olympics.model.ServerSideRequestSortModelInner;
+import com.backend.olympics.model.ServerSideResponse;
 import com.backend.olympics.repository.OlympicDataRepository;
-import com.example.model.ServerSideRequest;
-import com.example.model.ServerSideResponse;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +57,9 @@ public class OlympicDataService {
             List<Predicate> predicates = new ArrayList<>();
             
             if (request.getFilterModel() != null && !request.getFilterModel().isEmpty()) {
-                for (Map.Entry<String, com.example.model.ServerSideRequestFilterModelValue> entry : request.getFilterModel().entrySet()) {
+                for (Map.Entry<String, ServerSideRequestFilterModelValue> entry : request.getFilterModel().entrySet()) {
                     String field = entry.getKey();
-                    com.example.model.ServerSideRequestFilterModelValue filter = entry.getValue();
+                   ServerSideRequestFilterModelValue filter = entry.getValue();
                     
                     if ("set".equals(filter.getFilterType()) && filter.getValues() != null && !filter.getValues().isEmpty()) {
                         predicates.add(root.get(field).in(filter.getValues()));
@@ -75,7 +77,7 @@ public class OlympicDataService {
         }
         
         List<Sort.Order> orders = new ArrayList<>();
-        for (com.example.model.ServerSideRequestSortModelInner sortModel : request.getSortModel()) {
+        for (ServerSideRequestSortModelInner sortModel : request.getSortModel()) {
             String sortValue = sortModel.getSort() != null ? sortModel.getSort().getValue() : "asc";
             Sort.Direction direction = "desc".equalsIgnoreCase(sortValue) 
                 ? Sort.Direction.DESC 
