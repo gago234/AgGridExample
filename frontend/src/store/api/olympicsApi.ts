@@ -7,9 +7,13 @@ export interface SortModel {
   sort: "asc" | "desc";
 }
 
-export interface FilterModel {
+export interface ColumnFilter {
   filterType?: string;
-  values?: string[];
+  type?: string;
+  filter?: string | number | null;
+  filterTo?: string | number | null;
+  operator?: 'AND' | 'OR';
+  conditions?: ColumnFilter[];
 }
 
 export interface ServerSideRequest {
@@ -18,7 +22,7 @@ export interface ServerSideRequest {
   /** Ending row index (exclusive) */
   endRow: number;
   sortModel?: SortModel[];
-  filterModel?: Record<string, FilterModel>;
+  filterModel?: Record<string, ColumnFilter>;
 }
 
 export interface ServerSideResponse {

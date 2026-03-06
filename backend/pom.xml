@@ -79,6 +79,7 @@
                                 <additionalApiTypeAnnotations>@SuppressWarnings("all")</additionalApiTypeAnnotations>
                                 <additionalControllerAnnotations>@SuppressWarnings("all")</additionalControllerAnnotations>
                                 <additionalApplicationAnnotations>@SuppressWarnings("all")</additionalApplicationAnnotations>
+                                <openApiNullable>false</openApiNullable>
                             </configOptions>
                         </configuration>
                     </execution>

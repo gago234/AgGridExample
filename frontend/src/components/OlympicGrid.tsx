@@ -6,7 +6,9 @@ import {
   type GridApi,
   InfiniteRowModelModule,
   ModuleRegistry,
+  NumberFilterModule,
   PaginationModule,
+  TextFilterModule,
   ValidationModule,
 } from "ag-grid-community";
 import { useStore } from "react-redux";
@@ -33,6 +35,8 @@ if (typeof document !== "undefined" && !document.getElementById("ag-shimmer-styl
 ModuleRegistry.registerModules([
   InfiniteRowModelModule,
   PaginationModule,
+  TextFilterModule,
+  NumberFilterModule,
   ...(process.env.NODE_ENV !== "production" ? [ValidationModule] : []),
 ]);
 
@@ -62,16 +66,16 @@ export const OlympicGrid = ({
 
   const columnDefs = useMemo<ColDef[]>(
     () => [
-      { field: "id", maxWidth: 75 },
-      { field: "athlete", minWidth: 190 },
-      { field: "age" },
-      { field: "country" },
-      { field: "year" },
-      { field: "sport" },
-      { field: "gold" },
-      { field: "silver" },
-      { field: "bronze" },
-      { field: "total" },
+      { field: "id", maxWidth: 75, filter: "agNumberColumnFilter" },
+      { field: "athlete", minWidth: 190, filter: "agTextColumnFilter" },
+      { field: "age", filter: "agNumberColumnFilter" },
+      { field: "country", filter: "agTextColumnFilter" },
+      { field: "year", filter: "agNumberColumnFilter" },
+      { field: "sport", filter: "agTextColumnFilter" },
+      { field: "gold", filter: "agNumberColumnFilter" },
+      { field: "silver", filter: "agNumberColumnFilter" },
+      { field: "bronze", filter: "agNumberColumnFilter" },
+      { field: "total", filter: "agNumberColumnFilter" },
     ],
     [],
   );

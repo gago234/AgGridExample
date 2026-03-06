@@ -53,24 +53,6 @@ paths:
 
 components:
   schemas:
-    Athlete:
-      type: object
-      required:
-        - id
-        - name
-        - sport
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        sport:
-          type: string
-        age:
-          type: integer
-          minimum: 0
-
     ServerSideResponse:
       type: object
       required:
@@ -108,34 +90,61 @@ components:
           type: array
           description: List of columns to sort by with sort direction
           items:
-            type: object
-            properties:
-              colId:
-                type: string
-                description: Column ID to sort by
-                example: athlete
-              sort:
-                type: string
-                description: Sort direction
-                example: asc
-                enum:
-                  - asc
-                  - desc
+            $ref: '#/components/schemas/SortModel'
         filterModel:
           type: object
-          description: Map of column filters
+          description: >-
+            Map of column filters keyed by column ID.
+            Each value is an AG Grid ColumnFilter (text, number, or combined).
           additionalProperties:
-            type: object
-            properties:
-              filterType:
-                type: string
-                description: Type of filter
-                example: set
-              values:
-                type: array
-                description: Filter values
-                items:
-                  type: string
+            $ref: '#/components/schemas/ColumnFilter'
+
+    SortModel:
+      type: object
+      properties:
+        colId:
+          type: string
+          description: Column ID to sort by
+          example: athlete
+        sort:
+          type: string
+          description: Sort direction
+          example: asc
+          enum:
+            - asc
+            - desc
+
+    ColumnFilter:
+      type: object
+      description: >-
+        AG Grid column filter model. For a single condition: filterType, type,
+        filter, and optionally filterTo (for inRange). For combined conditions:
+        filterType, operator, and conditions array.
+      properties:
+        filterType:
+          type: string
+          description: Type of filter (text, number)
+        type:
+          type: string
+          description: >-
+            Filter operation (equals, notEqual, contains, notContains,
+            startsWith, endsWith, lessThan, lessThanOrEqual, greaterThan,
+            greaterThanOrEqual, inRange, blank, notBlank)
+        filter:
+          description: Primary filter value (string for text filters, number for numeric filters)
+        filterTo:
+          description: Secondary filter value (used with inRange)
+        operator:
+          type: string
+          description: Join operator for combined conditions
+          enum:
+            - AND
+            - OR
+        conditions:
+          type: array
+          description: Array of filter conditions when using combined filters
+          items:
+            $ref: '#/components/schemas/ColumnFilter'
 
   responses:
     ServerSideResponse:

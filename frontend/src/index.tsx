@@ -23,17 +23,25 @@ export const App = () => {
           className="px-4 py-3 flex gap-4 mb-2 rounded-md items-center bg-gray-100 border border-gray-300"
         >
           <span style={{ fontWeight: 600 }}>Mode:</span>
-          {(Object.keys(modeLabels) as GridMode[]).map((m) => (
+          <div className="inline-flex rounded-md shadow-sm overflow-hidden border border-gray-300 bg-white"></div>
+          {(Object.keys(modeLabels) as GridMode[]).map((m, i, arr) => (
             <label
               key={m}
-              className="flex items-center gap-1 cursor-pointer"
+              className={`
+                px-4 py-2 cursor-pointer select-none transition
+                text-gray-700 font-medium
+                ${mode === m ? "bg-blue-600 text-white" : "hover:bg-blue-50"}
+                ${i === 0 ? "rounded-l-md" : ""}
+                ${i === arr.length - 1 ? "rounded-r-md" : ""}
+              `}
             >
               <input
                 type="radio"
                 name="gridMode"
                 value={m}
                 checked={mode === m}
-                onChange={() => { setMode(m); }}
+                onChange={() => { setMode(m) }}
+                className="sr-only"
               />
               {modeLabels[m]}
             </label>
