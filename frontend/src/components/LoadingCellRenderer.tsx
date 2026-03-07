@@ -1,5 +1,24 @@
 import type { ICellRendererParams } from "ag-grid-community";
 
+// ── Styles ───────────────────────────────────────────────────────────
+
+const containerStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
+  height: "100%",
+  padding: "4px 0",
+};
+
+const barStyle: React.CSSProperties = {
+  width: "70%",
+  height: "14px",
+  borderRadius: "4px",
+  background: "linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%)",
+  backgroundSize: "200% 100%",
+  animation: "shimmer 1.5s ease-in-out infinite",
+};
+
 /**
  * Renders a pulsing skeleton bar when the cell value is still `undefined`
  * (i.e. the row hasn't been fetched yet).  Once the value arrives the
@@ -26,21 +45,3 @@ export const LoadingCellRenderer = (params: ICellRendererParams) => {
   );
 };
 
-// ── Styles ───────────────────────────────────────────────────────────
-
-const containerStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  width: "100%",
-  height: "100%",
-  padding: "4px 0",
-};
-
-const barStyle: React.CSSProperties = {
-  width: "70%",
-  height: "14px",
-  borderRadius: "4px",
-  background: "linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%)",
-  backgroundSize: "200% 100%",
-  animation: "shimmer 1.5s ease-in-out infinite",
-};

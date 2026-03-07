@@ -13,7 +13,6 @@ import {
 } from "ag-grid-community";
 import { useStore } from "react-redux";
 
-import type { IOlympicDataWithId } from "./interfaces";
 import { createInfiniteDatasource } from "../datasource/createDatasource";
 import { LoadingCellRenderer } from "./LoadingCellRenderer";
 import type { AppStore } from "../store/store";
@@ -41,17 +40,28 @@ ModuleRegistry.registerModules([
 ]);
 
 // ── Public types ─────────────────────────────────────────────────────
+export interface IOlympicDataWithId extends IOlympicData {
+    id: number;
+}
+
+export interface IOlympicData {
+    athlete: string,
+    age: number,
+    country: string,
+    year: number,
+    date: string,
+    sport: string,
+    gold: number,
+    silver: number,
+    bronze: number,
+    total: number
+}
+
 export type GridMode = "pagination" | "infinite";
 
-export interface OlympicGridProps {
-  /** "pagination" → classic page controls, "infinite" → endless scroll */
-  mode: GridMode;
-  /** Rows shown per page (pagination mode only). Default 20. */
+export interface OlympicGridProps { 
+  mode: GridMode;  
   pageSize?: number;
-  /**
-   * How many rows the grid requests from the server in a single block.
-   * Default 100.  Works in both modes.
-   */
   cacheBlockSize?: number;
 }
 

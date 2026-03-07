@@ -22,11 +22,10 @@ export default defineConfig(
             }],
 
             // General rules
-            curly: 'warn',
+            curly: ["error", "multi-line"],
             eqeqeq: 'warn',
             'no-throw-literal': 'warn',
             semi: 'warn',
-
             '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // requires `strictNullChecks` to be enabled
             '@typescript-eslint/no-unnecessary-condition': 'off', // requires `strictNullChecks` to be enabled
             '@typescript-eslint/no-unsafe-assignment': 'off',

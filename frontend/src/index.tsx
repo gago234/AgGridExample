@@ -40,7 +40,7 @@ export const App = () => {
                 name="gridMode"
                 value={m}
                 checked={mode === m}
-                onChange={() => { setMode(m) }}
+                onChange={() => { setMode(m); }}
                 className="sr-only"
               />
               {modeLabels[m]}
