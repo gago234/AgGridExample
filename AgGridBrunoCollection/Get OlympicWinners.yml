@@ -12,13 +12,19 @@ http:
       {
         "startRow": 0,
         "endRow": 100,
-        "sortModel": [
-          {
-            "colId": "athlete",
-            "sort": "asc"
-          }
-        ],
-        "filterModel": {}
+          "filterModel": {
+            "country": {
+              "filterType": "text",
+              "type": "contains",
+              "filter": "USA"
+            }
+          },
+          "sortModel": [
+            {
+              "colId": "athlete",
+              "sort": "asc"
+            }
+          ]
       }
   auth: inherit
 

@@ -1,12 +1,5 @@
 package com.backend.olympics.service;
 
-import com.backend.olympics.model.ColumnFilter;
-import com.backend.olympics.model.OlympicData;
-import com.backend.olympics.model.ServerSideRequest;
-import com.backend.olympics.model.SortModel;
-import com.backend.olympics.model.ServerSideResponse;
-import com.backend.olympics.repository.OlympicDataRepository;
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
@@ -19,39 +12,60 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.backend.aggrid.model.ColumnFilter;
+import com.backend.aggrid.model.NumberColumnFilter;
+import com.backend.aggrid.model.ServerSideGetRowsRequest;
+import com.backend.aggrid.model.ServerSideGetRowsResponse;
+import com.backend.aggrid.model.SortModel;
+import com.backend.aggrid.model.TextColumnFilter;
+import com.backend.olympics.model.OlympicData;
+import com.backend.olympics.model.OlympicGetRowsResponse;
+import com.backend.olympics.repository.OlympicDataRepository;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class OlympicDataService {
-    
+
     @Autowired
     private OlympicDataRepository repository;
-    
-    public ServerSideResponse getData(ServerSideRequest request) {
-        try {
+
+    public OlympicGetRowsResponse getData(ServerSideGetRowsRequest request) {
+        try {  
             Specification<OlympicData> spec = buildSpecification(request);
             Sort sort = buildSort(request);
-            
+
             int pageSize = request.getEndRow() - request.getStartRow();
             int pageNumber = request.getStartRow() / pageSize;
             Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-            
+
             Page<OlympicData> page = repository.findAll(spec, pageable);
             long totalCount = page.getTotalElements();
-            
-            return new ServerSideResponse(true, new ArrayList<>(page.getContent()), totalCount);
+
+            List<OlympicData> rows = page.getContent();
+
+            ServerSideGetRowsResponse modelResp = new com.backend.aggrid.model.ServerSideGetRowsResponse()
+                    .lastRow((int) totalCount);
+
+            OlympicGetRowsResponse response = new OlympicGetRowsResponse()
+                    .rows(rows)
+                    .modelResponse(modelResp);
+
+            return response;
+
         } catch (Exception e) {
             e.printStackTrace();
-            return new ServerSideResponse(false, new ArrayList<>(), 0L);
+            return new OlympicGetRowsResponse();
         }
     }
-    
-    private Specification<OlympicData> buildSpecification(ServerSideRequest request) {
+
+    private Specification<OlympicData> buildSpecification(ServerSideGetRowsRequest request) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            
+
             if (request.getFilterModel() != null) {
                 for (Map.Entry<String, ColumnFilter> entry : request.getFilterModel().entrySet()) {
                     String field = entry.getKey();
@@ -62,142 +76,95 @@ public class OlympicDataService {
                     }
                 }
             }
-            
+
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
 
     private Predicate buildFilterPredicate(Root<OlympicData> root, CriteriaBuilder cb,
-                                           String field, ColumnFilter filter) {
-        // Combined conditions (operator + conditions array)
-        if (filter.getOperator() != null && filter.getConditions() != null && !filter.getConditions().isEmpty()) {
-            List<Predicate> conditionPredicates = new ArrayList<>();
-            for (ColumnFilter condition : filter.getConditions()) {
-                Predicate p = buildFilterPredicate(root, cb, field, condition);
-                if (p != null) {
-                    conditionPredicates.add(p);
-                }
-            }
-            if (conditionPredicates.isEmpty()) {
-                return null;
-            }
-            Predicate[] arr = conditionPredicates.toArray(new Predicate[0]);
-            return "OR".equals(filter.getOperator().getValue()) ? cb.or(arr) : cb.and(arr);
-        }
-
-        // Single condition
-        String filterType = filter.getFilterType();
-        String type = filter.getType();
-        if (type == null) {
-            return null;
-        }
-
-        Object filterValue = filter.getFilter();
-        Object filterToValue = filter.getFilterTo();
-
-        if ("text".equals(filterType)) {
-            return buildTextPredicate(root, cb, field, type, filterValue);
-        } else if ("number".equals(filterType)) {
-            return buildNumberPredicate(root, cb, field, type, filterValue, filterToValue);
+            String field, ColumnFilter filter) {
+        if (filter instanceof TextColumnFilter textFilter) {
+            return buildTextPredicate(root, cb, field, textFilter);
+        } else if (filter instanceof NumberColumnFilter numberFilter) {
+            return buildNumberPredicate(root, cb, field, numberFilter);
         }
         return null;
     }
 
     private Predicate buildTextPredicate(Root<OlympicData> root, CriteriaBuilder cb,
-                                         String field, String type, Object filterValue) {
+            String field, TextColumnFilter filter) {
+        if (filter.getType() == null)
+            return null;
         Path<String> path = root.get(field);
-        String value = filterValue != null ? filterValue.toString().toLowerCase() : "";
+        String type = filter.getType().getValue();
+        String value = filter.getFilter() != null ? filter.getFilter().toLowerCase() : "";
 
-        switch (type) {
-            case "equals":
-                return cb.equal(cb.lower(path), value);
-            case "notEqual":
-                return cb.notEqual(cb.lower(path), value);
-            case "contains":
-                return cb.like(cb.lower(path), "%" + escapeLike(value) + "%", '\\');
-            case "notContains":
-                return cb.notLike(cb.lower(path), "%" + escapeLike(value) + "%", '\\');
-            case "startsWith":
-                return cb.like(cb.lower(path), escapeLike(value) + "%", '\\');
-            case "endsWith":
-                return cb.like(cb.lower(path), "%" + escapeLike(value), '\\');
-            case "blank":
-                return cb.or(cb.isNull(path), cb.equal(path, ""));
-            case "notBlank":
-                return cb.and(cb.isNotNull(path), cb.notEqual(path, ""));
-            default:
-                return null;
-        }
+        return switch (type) {
+            case "equals" -> cb.equal(cb.lower(path), value);
+            case "notEqual" -> cb.notEqual(cb.lower(path), value);
+            case "contains" -> cb.like(cb.lower(path), "%" + escapeLike(value) + "%", '\\');
+            case "notContains" -> cb.notLike(cb.lower(path), "%" + escapeLike(value) + "%", '\\');
+            case "startsWith" -> cb.like(cb.lower(path), escapeLike(value) + "%", '\\');
+            case "endsWith" -> cb.like(cb.lower(path), "%" + escapeLike(value), '\\');
+            case "blank" -> cb.or(cb.isNull(path), cb.equal(path, ""));
+            case "notBlank" -> cb.and(cb.isNotNull(path), cb.notEqual(path, ""));
+            default -> null;
+        };
     }
 
     private Predicate buildNumberPredicate(Root<OlympicData> root, CriteriaBuilder cb,
-                                           String field, String type,
-                                           Object filterValue, Object filterToValue) {
-        Path<? extends Number> path = root.get(field);
-
-        switch (type) {
-            case "blank":
-                return cb.isNull(path);
-            case "notBlank":
-                return cb.isNotNull(path);
-            default:
-                break;
-        }
-
-        if (filterValue == null) {
+            String field, NumberColumnFilter filter) {
+        if (filter.getType() == null)
             return null;
-        }
+        Path<? extends Number> path = root.get(field);
+        String type = filter.getType().getValue();
 
-        double value = ((Number) filterValue).doubleValue();
-
-        switch (type) {
-            case "equals":
-                return cb.equal(path, value);
-            case "notEqual":
-                return cb.notEqual(path, value);
-            case "lessThan":
-                return cb.lt(path, value);
-            case "lessThanOrEqual":
-                return cb.le(path, value);
-            case "greaterThan":
-                return cb.gt(path, value);
-            case "greaterThanOrEqual":
-                return cb.ge(path, value);
-            case "inRange":
-                if (filterToValue != null) {
-                    double to = ((Number) filterToValue).doubleValue();
-                    return cb.and(cb.ge(path, value), cb.le(path, to));
-                }
-                return null;
-            default:
-                return null;
-        }
+        return switch (type) {
+            case "blank" -> cb.isNull(path);
+            case "notBlank" -> cb.isNotNull(path);
+            default -> {
+                BigDecimal value = filter.getFilter();
+                if (value == null)
+                    yield null;
+                yield switch (type) {
+                    case "equals" -> cb.equal(path, value);
+                    case "notEqual" -> cb.notEqual(path, value);
+                    case "lessThan" -> cb.lt(path, value);
+                    case "lessThanOrEqual" -> cb.le(path, value);
+                    case "greaterThan" -> cb.gt(path, value);
+                    case "greaterThanOrEqual" -> cb.ge(path, value);
+                    case "inRange" -> filter.getFilterTo() != null
+                            ? cb.and(cb.ge(path, value), cb.le(path, filter.getFilterTo()))
+                            : null;
+                    default -> null;
+                };
+            }
+        };
     }
 
     /** Escapes SQL LIKE special characters so user input is treated literally. */
     private static String escapeLike(String value) {
         return value.replace("\\", "\\\\")
-                    .replace("%", "\\%")
-                    .replace("_", "\\_");
+                .replace("%", "\\%")
+                .replace("_", "\\_");
     }
-    
-    private Sort buildSort(ServerSideRequest request) {
+
+    private Sort buildSort(ServerSideGetRowsRequest request) {
         if (request.getSortModel() == null || request.getSortModel().isEmpty()) {
             return Sort.unsorted();
         }
-        
+
         List<Sort.Order> orders = new ArrayList<>();
         for (SortModel sortModel : request.getSortModel()) {
-            String sortValue = sortModel.getSort() != null ? sortModel.getSort().getValue() : "asc";
-            Sort.Direction direction = "desc".equalsIgnoreCase(sortValue) 
-                ? Sort.Direction.DESC 
-                : Sort.Direction.ASC;
+            Sort.Direction direction = SortModel.SortEnum.DESC == sortModel.getSort()
+                    ? Sort.Direction.DESC
+                    : Sort.Direction.ASC;
             orders.add(new Sort.Order(direction, sortModel.getColId()));
         }
-        
+
         return Sort.by(orders);
     }
-    
+
     public List<String> getCountries() {
         return repository.findDistinctCountries();
     }

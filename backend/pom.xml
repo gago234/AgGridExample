@@ -54,18 +54,74 @@
                 <version>7.20.0</version>
                 <executions>
                     <execution>
+                        <id>generate-olympics</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/specs/olympic-specs.yaml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/olympicspecs</output>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>backend.olympics.api</apiPackage>
+                            <modelPackage>com.backend.olympics.model</modelPackage>
+                            <schemaMappings>
+                                OlympicData=com.backend.olympics.model.OlympicData,
+                                ServerSideGetRowsRequest=com.backend.aggrid.model.ServerSideGetRowsRequest,
+                                ServerSideGetRowsResponse=com.backend.aggrid.model.ServerSideGetRowsResponse,
+                                ColumnVO=com.backend.aggrid.model.ColumnVO,
+                                SortModel=com.backend.aggrid.model.SortModel,
+                                ColumnFilter=com.backend.aggrid.model.ColumnFilter,
+                                TextColumnFilter=com.backend.aggrid.model.TextColumnFilter,
+                                NumberColumnFilter=com.backend.aggrid.model.NumberColumnFilter,
+                                DateColumnFilter=com.backend.aggrid.model.DateColumnFilter,
+                                SetColumnFilter=com.backend.aggrid.model.SetColumnFilter
+                            </schemaMappings>
+                            <importMappings>
+                                OlympicData=com.backend.olympics.model.OlympicData,
+                                ServerSideGetRowsRequest=com.backend.aggrid.model.ServerSideGetRowsRequest,
+                                ServerSideGetRowsResponse=com.backend.aggrid.model.ServerSideGetRowsResponse,
+                                ColumnVO=com.backend.aggrid.model.ColumnVO,
+                                SortModel=com.backend.aggrid.model.SortModel,
+                                ColumnFilter=com.backend.aggrid.model.ColumnFilter,
+                                TextColumnFilter=com.backend.aggrid.model.TextColumnFilter,
+                                NumberColumnFilter=com.backend.aggrid.model.NumberColumnFilter,
+                                DateColumnFilter=com.backend.aggrid.model.DateColumnFilter,
+                                SetColumnFilter=com.backend.aggrid.model.SetColumnFilter
+                            </importMappings>
+                            <configOptions>
+                                <basePackage>com.backend.olympics</basePackage>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useTags>true</useTags>
+                                <documentationProvider>none</documentationProvider>
+                                <annotationLibrary>none</annotationLibrary>
+                                <useLombok>true</useLombok>
+                                <delegatePattern>true</delegatePattern>
+                                <useBeanValidation>true</useBeanValidation>
+                                <additionalEnumTypeAnnotations>@SuppressWarnings("all")</additionalEnumTypeAnnotations>
+                                <additionalModelTypeAnnotations>@SuppressWarnings("all")</additionalModelTypeAnnotations>
+                                <additionalOneOfTypeAnnotations>@SuppressWarnings("all")</additionalOneOfTypeAnnotations>
+                                <additionalApiTypeAnnotations>@SuppressWarnings("all")</additionalApiTypeAnnotations>
+                                <additionalControllerAnnotations>@SuppressWarnings("all")</additionalControllerAnnotations>
+                                <additionalApplicationAnnotations>@SuppressWarnings("all")</additionalApplicationAnnotations>
+                                <openApiNullable>false</openApiNullable>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>generate-client</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/specs/openapi.yaml</inputSpec>
-                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <inputSpec>${project.basedir}/src/main/resources/specs/ag-grid-specs.yaml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/aggrid</output>
+                            <apiPackage>com.backend.aggrid.api</apiPackage>
+                            <modelPackage>com.backend.aggrid.model</modelPackage>
                             <generatorName>spring</generatorName>
-                            <apiPackage>backend.olympics.api</apiPackage>
-                            <modelPackage>com.backend.olympics.model</modelPackage>
+                            <generateApis>false</generateApis>
+                            <generateSupportingFiles>false</generateSupportingFiles>
                             <configOptions>
-                                <basePackage>com.backend.olympics</basePackage>
+                                <basePackage>com.backend.aggrid</basePackage>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <useTags>true</useTags>
                                 <documentationProvider>none</documentationProvider>

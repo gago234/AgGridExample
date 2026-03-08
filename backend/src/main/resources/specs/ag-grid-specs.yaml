@@ -1,0 +1,238 @@
+openapi: 3.0.0
+info:
+  title: Olympics API
+  version: 1.0.0
+  description: API for Olympics data
+
+paths:
+  /placholder:
+    get:     
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Not found
+
+
+# OpenAPI 3.0 Components for AG Grid Server-Side Row Model
+components:
+  schemas:
+    ServerSideGetRowsRequest:
+      type: object
+      description: Request object for AG Grid Server-Side Row Model
+      properties:
+        startRow:
+          type: integer
+          description: First row requested
+          example: 0
+        endRow:
+          type: integer
+          description: Last row requested (exclusive)
+          example: 100
+        rowGroupCols:
+          type: array
+          description: Row group columns
+          items:
+            $ref: '#/components/schemas/ColumnVO'
+        valueCols:
+          type: array
+          description: Value (aggregation) columns
+          items:
+            $ref: '#/components/schemas/ColumnVO'
+        pivotCols:
+          type: array
+          description: Pivot columns
+          items:
+            $ref: '#/components/schemas/ColumnVO'
+        pivotMode:
+          type: boolean
+          description: True if pivot mode is on, otherwise false
+          default: false
+        groupKeys:
+          type: array
+          description: What groups the user is currently viewing (expanded group keys)
+          items:
+            type: string
+        filterModel:
+          type: object
+          description: Filter model keyed by column id
+          additionalProperties:
+            $ref: '#/components/schemas/ColumnFilter'
+        sortModel:
+          type: array
+          description: Sort model describing active sorts
+          items:
+            $ref: '#/components/schemas/SortModel'
+
+    ServerSideGetRowsResponse:
+      type: object
+      description: Response object for AG Grid Server-Side Row Model
+      properties:
+        data:
+          type: array
+          description: Row data returned from the server
+          items:
+            type: object
+            additionalProperties: true
+        lastRow:
+          type: integer
+          description: Total number of rows if known, or -1 if unknown
+          example: 1000
+        pivotResultColumnsFields:
+          type: array
+          description: Pivot result column field identifiers (only used in pivot mode)
+          items:
+            type: string
+
+    ColumnVO:
+      type: object
+      description: Column definition sent by the grid
+      properties:
+        id:
+          type: string
+          description: Column identifier
+          example: "country"
+        displayName:
+          type: string
+          description: Display name of the column
+          example: "Country"
+        field:
+          type: string
+          description: Field name mapped to row data
+          example: "country"
+        aggFunc:
+          type: string
+          description: Aggregation function (e.g. sum, min, max, avg, count)
+          example: "sum"
+          enum:
+            - sum
+            - min
+            - max
+            - avg
+            - count
+            - first
+            - last
+
+    SortModel:
+      type: object
+      description: Sort model for a single column
+      properties:
+        colId:
+          type: string
+          description: Column id to sort by
+          example: "athlete"
+        sort:
+          type: string
+          description: Sort direction
+          enum:
+            - asc
+            - desc
+          example: "asc"
+
+    ColumnFilter:
+      type: object
+      description: Base filter model. Use oneOf for specific filter types.
+      discriminator:
+        propertyName: filterType
+        mapping:
+          text: '#/components/schemas/TextColumnFilter'
+          number: '#/components/schemas/NumberColumnFilter'
+          date: '#/components/schemas/DateColumnFilter'
+          set: '#/components/schemas/SetColumnFilter'
+      oneOf:
+        - $ref: '#/components/schemas/TextColumnFilter'
+        - $ref: '#/components/schemas/NumberColumnFilter'
+        - $ref: '#/components/schemas/DateColumnFilter'
+        - $ref: '#/components/schemas/SetColumnFilter'
+
+    TextColumnFilter:
+      type: object
+      description: Text filter model
+      required:
+        - filterType
+      properties:
+        filterType:
+          type: string
+        type:
+          type: string
+          description: Filter operation type
+          enum:
+            - equals
+            - notEqual
+            - contains
+            - notContains
+            - startsWith
+            - endsWith
+            - blank
+            - notBlank
+        filter:
+          type: string
+          description: The filter text value
+
+    NumberColumnFilter:
+      type: object
+      description: Number filter model
+      required:
+        - filterType
+      properties:
+        filterType:
+          type: string
+        type:
+          type: string
+          enum:
+            - equals
+            - notEqual
+            - greaterThan
+            - greaterThanOrEqual
+            - lessThan
+            - lessThanOrEqual
+            - inRange
+            - blank
+            - notBlank
+        filter:
+          type: number
+          description: The first filter value
+        filterTo:
+          type: number
+          description: The second filter value (used with inRange)
+
+    DateColumnFilter:
+      type: object
+      description: Date filter model
+      required:
+        - filterType
+      properties:
+        filterType:
+          type: string
+        type:
+          type: string
+          enum:
+            - equals
+            - notEqual
+            - greaterThan
+            - lessThan
+            - inRange
+            - blank
+            - notBlank
+        dateFrom:
+          type: string
+          format: date
+          description: The start date
+        dateTo:
+          type: string
+          format: date
+          description: The end date (used with inRange)
+
+    SetColumnFilter:
+      type: object
+      description: Set filter model
+      required:
+        - filterType
+      properties:
+        filterType:
+          type: string
+        values:
+          type: array
+          description: Selected filter values
+          items:
+            type: string

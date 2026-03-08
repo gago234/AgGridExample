@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: Olympics API
+  version: 1.0.0
+  description: API for Olympics data
+
+servers:
+  - url: http://localhost:4001/api
+
+paths:
+  /data:
+    post:
+      tags:
+        - olympic        
+      summary: Get Olympic data with server-side pagination
+      description: Retrieve Olympic athlete data with support for pagination, sorting, and filtering
+      operationId: getData
+      requestBody:
+        description: Server-side request with pagination, sorting, and filter parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'ag-grid-specs.yaml#/components/schemas/ServerSideGetRowsRequest'
+      responses:
+        '200':
+          description: Successfully retrieved data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OlympicGetRowsResponse'
+        '400':
+          description: Invalid request parameters
+
+components:
+  schemas:
+    OlympicData:
+      type: object
+      properties:
+        athlete:
+          type: string
+        age:
+          type: integer
+        country:
+          type: string
+        year:
+          type: integer
+        sport:
+          type: string
+        gold:
+          type: integer
+        silver:
+          type: integer
+        bronze:
+          type: integer
+        total:
+          type: integer
+      required:
+        - athlete
+
+    OlympicGetRowsResponse:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/OlympicData'
+        modelResponse:
+          $ref: 'ag-grid-specs.yaml#/components/schemas/ServerSideGetRowsResponse'
+      required:
+          - rows
+          - request

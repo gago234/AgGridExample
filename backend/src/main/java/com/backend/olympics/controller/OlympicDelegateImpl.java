@@ -1,12 +1,8 @@
 package com.backend.olympics.controller;
-
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import com.backend.olympics.model.ServerSideRequest;
-import com.backend.olympics.model.ServerSideResponse;
+import com.backend.aggrid.model.ServerSideGetRowsRequest;
+import com.backend.olympics.model.OlympicGetRowsResponse;
 import com.backend.olympics.service.OlympicDataService;
 
 import backend.olympics.api.OlympicApiDelegate;
@@ -19,13 +15,9 @@ public class OlympicDelegateImpl implements OlympicApiDelegate {
     private final OlympicDataService service;
 
     @Override
-    public ResponseEntity<ServerSideResponse> getData(ServerSideRequest serverSideRequest) {
-        return ResponseEntity.ok(service.getData(serverSideRequest));
+    public ResponseEntity<OlympicGetRowsResponse> getData(ServerSideGetRowsRequest olympicGetRowsRequest) {
+      return ResponseEntity.ok(service.getData(olympicGetRowsRequest));
     }
 
-    @Override
-    public ResponseEntity<List<String>> getCountries() {
-        return ResponseEntity.ok(service.getCountries());
-    }
-
+    
 }
