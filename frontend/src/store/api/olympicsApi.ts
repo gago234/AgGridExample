@@ -1,36 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type { components } from "../../types/olympic-schema";
 
-// ── Request / Response types (mirrors the OpenAPI schema) ────────────
+// ── Types generated from OpenAPI specs ───────────────────────────────
 
-export interface SortModel {
-  colId: string;
-  sort: "asc" | "desc";
-}
-
-export interface ColumnFilter {
-  filterType?: string;
-  type?: string;
-  filter?: string | number | null;
-  filterTo?: string | number | null;
-  operator?: 'AND' | 'OR';
-  conditions?: ColumnFilter[];
-}
-
-export interface ServerSideRequest {
-  /** Starting row index (0-based) */
-  startRow: number;
-  /** Ending row index (exclusive) */
-  endRow: number;
-  sortModel?: SortModel[];
-  filterModel?: Record<string, ColumnFilter>;
-}
-
-export interface ServerSideResponse {
-  success: boolean;
-  rows: Record<string, unknown>[];
-  /** Total rows available (-1 when unknown) */
-  lastRow: number;
-}
+export type ServerSideRequest = components["schemas"]["ServerSideGetRowsRequest"];
+export type ServerSideResponse = components["schemas"]["OlympicGetRowsResponse"];
+export type OlympicData = components["schemas"]["OlympicData"];
+export type SortModel = components["schemas"]["SortModel"];
+export type ColumnVO = components["schemas"]["ColumnVO"];
+export type ColumnFilter = components["schemas"]["ColumnFilter"];
+export type ServerSideGetRowsResponse = components["schemas"]["ServerSideGetRowsResponse"];
 
 // ── RTK Query API ────────────────────────────────────────────────────
 

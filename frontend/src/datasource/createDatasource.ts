@@ -28,6 +28,7 @@ export function createInfiniteDatasource(store: AppStore): IDatasource {
         const request: ServerSideRequest = {
           startRow: params.startRow,
           endRow: params.endRow,
+          pivotMode: false,
           sortModel: params.sortModel?.map((s) => ({
             colId: s.colId,
             sort: s.sort as "asc" | "desc",
@@ -42,7 +43,7 @@ export function createInfiniteDatasource(store: AppStore): IDatasource {
         try {
           const result = await resultPromise.unwrap();
           const rows = result.rows ?? [];
-          const lastRow = result.lastRow ?? -1;
+          const lastRow = result.modelResponse?.lastRow ?? -1;
 
           console.log("[RTK Datasource] block loaded", {
             rowCount: rows.length,

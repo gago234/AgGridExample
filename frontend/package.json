@@ -13,8 +13,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src",
-    "openapi:generate": "openapi-typescript http://localhost:4001/api-docs -o ./src/types/api-schema.ts",
-    "openapi:generate-client": "openapi-typescript-codegen --input http://localhost:4001/api-docs --output ./src/openapi --client fetch"
+    "openapi:generate": "openapi-typescript ../backend/src/main/resources/specs/olympic-specs.yaml -o ./src/types/olympic-schema.ts && openapi-typescript ../backend/src/main/resources/specs/ag-grid-specs.yaml -o ./src/types/ag-grid-schema.ts"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",

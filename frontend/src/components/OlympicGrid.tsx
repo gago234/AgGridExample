@@ -16,6 +16,7 @@ import { useStore } from "react-redux";
 import { createInfiniteDatasource } from "../datasource/createDatasource";
 import { LoadingCellRenderer } from "./LoadingCellRenderer";
 import type { AppStore } from "../store/store";
+import type { OlympicData } from "../store/api/olympicsApi";
 
 // ── Inject shimmer keyframes once ───────────────────────────────────
 if (typeof document !== "undefined" && !document.getElementById("ag-shimmer-style")) {
@@ -40,22 +41,7 @@ ModuleRegistry.registerModules([
 ]);
 
 // ── Public types ─────────────────────────────────────────────────────
-export interface IOlympicDataWithId extends IOlympicData {
-    id: number;
-}
-
-export interface IOlympicData {
-    athlete: string,
-    age: number,
-    country: string,
-    year: number,
-    date: string,
-    sport: string,
-    gold: number,
-    silver: number,
-    bronze: number,
-    total: number
-}
+export type IOlympicDataWithId = OlympicData & { id: number };
 
 export type GridMode = "pagination" | "infinite";
 
